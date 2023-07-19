@@ -19,9 +19,10 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """decorator stores history of I/Oputs for partclr func"""
-    
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrapper decor func"""
@@ -34,6 +35,7 @@ def call_history(method: Callable) -> Callable:
         return output
 
     return wrapper
+
 
 def replay(fn: Callable):
     """history of calls for particlr func display"""
@@ -58,8 +60,9 @@ def replay(fn: Callable):
             o = o.decode("utf-8")
         except Exception:
             o = ""
-        
+
         print(f"{func_name}(*{i}) -> {o}")
+
 
 class Cache:
     """implementing cache class"""
@@ -76,7 +79,7 @@ class Cache:
         randomkey = str(uuid4())
         self._redis.set(randomkey, data)
 
-        return randomkey 
+        return randomkey
 
     def get(self, key: str,
             fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
