@@ -35,6 +35,32 @@ def call_history(method: Callable) -> Callable:
 
     return wrapper
 
+def replay(fn: Callable):
+    """history of calls for particlr func display"""
+    R = redis.Redis()
+    func_name = fn.__qualname__
+    num_calls = R.get(func_name)
+    try:
+        num_calls = num_calls.decode("utf-8")
+    except Exception:
+        num_calls = 0
+    print(f"{func_name} was called {num_calls} times:")
+
+    inputs = R.lrange(func_name + ":inputs", 0, -1)
+    outputs = R.lrange(func_name + ":outputs", 0, -1)
+
+    for i, o in zip(inputs, outputs):
+        try:
+            i = i.decode("utf-8")
+        except Exception:
+            i = ""
+        try:
+            o = o.decode("utf-8")
+        except Exception:
+            o = ""
+        
+        print(f"{func_name}(*{i}) -> {o}")
+
 class Cache:
     """implementing cache class"""
 
