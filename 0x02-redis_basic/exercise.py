@@ -21,3 +21,26 @@ class Cache:
         self._redis.set(randomkey, data)
 
         return randomkey 
+
+    def get(self, key: str,
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+        """reading from redis, convert to recover original type"""
+        val = self._redis.get(key)
+        if fn:
+            val = fn(val)
+
+        return val
+
+    def get_str(self, key: str) -> str:
+        """parameterizing a value from redis to string"""
+        val = self._redis.get(key)
+        return val.decode("utf-8")
+
+    def get_int(self, key: str) -> int:
+        """parameterizing a value from redis to string"""
+        val = self._redis.get(key)
+        try:
+            val = int(val.decode("utf-8"))
+        except Exception:
+            val = 0
+        return val
